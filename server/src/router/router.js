@@ -1,26 +1,89 @@
 import express from "express";
-import { fetchAllChatRooms, createChatRoom } from "../service/service.js";
-
+import ChatRoom from "../../models/chatRoom.js";
+import ChatMessage from "../../models/chatmessage.js";
+import Broadcast from "../../models/broadcast.js";
+import adminToken from "../authentication/authentication.js";
 const router = express.Router();
 
-router.get("/channel", (req, res) => {
-  return fetchAllChatRooms().then((chatRooms) => res.send(chatRooms));
-}); //Hämta alla chatter
+// fetch all channels
+router.get("/channel", async (req, res) => {
+  try {
+    const channel = await ChatRoom.find({}); // find({}) <-- tomt betyder alla produkter
+    res.status(200).json(channel);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
-router.get("/channel:id", (req, res) => {}); // Hämta ett specifikt cattrum
+// fetch channel by ID
+router.get("/channel/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const channel = await ChatRoom.findById(id);
+    res.status(200).json(channel);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
+// Create channel
 router.put("/channel", async (req, res) => {
-  const chatRoom = req.body;
-  const result = await createChatRoom(chatRoom);
-  res.status(201).send(result);
-}); // Skapa chattrum
+  try {
+    const channel = await ChatRoom.create(req.body);
+    res.status(200).json(channel);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
 
-router.post("/channel:id", (req, res) => {}); // SKicka nytt meddelande i en specifik chatt
+// Create new message
+// router.post("/channel/:id", async (req, res) => {
+//   try {
+//     const message = await ChatMessage.create(req.body);
+//     res.status(200).json(message);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+// }
+// });
 
-router.delete("/channel:id", (req, res) => {}); // Ta bort ett chattrum
+// Delete channel by ID
+router.delete("/channel/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const channel = await ChatRoom.findByIdAndDelete(id);
+    if (!channel) {
+      return res.status(404).json({ message: "cannot find channel" });
+    }
+    res.status(200).json(channel);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
-router.get("/broadcast", (req, res) => {}); // Hämta nödhändelser
+// Fetch emergency broadcast
+router.get("/broadcast", async (req, res) => {
+  try {
+    const channel = await Broadcast.find({});
+    res.status(200).json(channel);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
-router.post("/broadcast", (req, res) => {}); // Skapa ny nödhändelse (Bara "Admin" ska kunna skapa)
+// Create emergency broadcast (admin only)
+router.post("/broadcast", async (req, res) => {
+  if (!adminToken) {
+    res.status(403);
+  } else {
+    try {
+      const channel = await Broadcast.create(req.body);
+      res.status(200).json(channel);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ message: error.message });
+    }
+  }
+});
 
 export default router;

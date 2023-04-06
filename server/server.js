@@ -3,7 +3,8 @@ env.config();
 
 import express from "express";
 import router from "./src/router/router.js";
-import connectDB from "./src/mongoose/mongoose.js";
+import connectDB from "./src/mongoose/mongoDb.js";
+import ChatRoom from "./models/chatRoom.js";
 
 const addr = "127.0.0.1";
 const port = process.env.PORT;
