@@ -1,18 +1,18 @@
 import express from "express";
-import { fetchAllChatRooms } from "../service/service";
+import { fetchAllChatRooms, createChatRoom } from "../service/service.js";
 
 const router = express.Router();
 
 router.get("/channel", (req, res) => {
-  res.send(req.body);
-
-  fetchAllChatRooms().then(() => res.render("chatRoom"));
+  return fetchAllChatRooms().then((chatRooms) => res.send(chatRooms));
 }); //Hämta alla chatter
 
 router.get("/channel:id", (req, res) => {}); // Hämta ett specifikt cattrum
 
-router.put("/channel", (req, res) => {
-  res.send(req.body);
+router.put("/channel", async (req, res) => {
+  const chatRoom = req.body;
+  const result = await createChatRoom(chatRoom);
+  res.status(201).send(result);
 }); // Skapa chattrum
 
 router.post("/channel:id", (req, res) => {}); // SKicka nytt meddelande i en specifik chatt
