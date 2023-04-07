@@ -22,4 +22,21 @@ const ChatRoom = mongoose.model("ChatRoom", chatRoomSchema);
 
 // aPost.save((err, data) => {});
 
+export async function createChatroom(req, res) {
+  const name = req.body;
+
+  const chatRoomExists = await ChatRoom.findOne(name);
+
+  if (chatRoomExists) throw "Chatroom alredy exists";
+
+  const newChatRoom = new ChatRoom(name);
+  await newChatRoom.save();
+
+  res.json({ message: "New chatroom added" });
+}
+export async function allChatrooms(req, res) {
+  const chatrooms = await ChatRoom.find({});
+  res.json(chatrooms);
+}
+
 export default ChatRoom;

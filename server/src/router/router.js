@@ -3,6 +3,7 @@ import ChatRoom from "../../models/chatRoom.js";
 import ChatMessage from "../../models/chatmessage.js";
 import Broadcast from "../../models/broadcast.js";
 import adminToken from "../authentication/authentication.js";
+import jwt from "jsonwebtoken";
 const router = express.Router();
 
 // fetch all channels
@@ -73,10 +74,14 @@ router.get("/broadcast", async (req, res) => {
 
 // Create emergency broadcast (admin only)
 router.post("/broadcast", async (req, res) => {
-  if (!adminToken) {
-    res.status(403);
+  const authHeader = req.headers["authorization"];
+  if (authHeader == undefined) {
+    res.status(403); //bad request
+    res.send("sign in required");
   } else {
+    const token = authHeader.replace("Bearer ", "");
     try {
+      jwt.verify(token, process.env.JWT_SIGN_KEY);
       const channel = await Broadcast.create(req.body);
       res.status(200).json(channel);
     } catch (error) {
