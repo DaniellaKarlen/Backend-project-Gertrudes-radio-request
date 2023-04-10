@@ -39,14 +39,30 @@ router.put("/channel", async (req, res) => {
 });
 
 // Create new message
-// router.post("/channel/:id", async (req, res) => {
-//   try {
-//     const message = await ChatMessage.create(req.body);
-//     res.status(200).json(message);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-// }
-// });
+router.post("/channel/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, message } = req.body;
+    const chatRoom = await ChatRoom.findById(id);
+    if (!chatRoom) {
+      return res.status(404).json({ message: "cannot find chatroom" });
+    }
+
+    const newMessage = new ChatMessage({ name, message });
+    chatRoom.message.push(newMessage);
+    await chatRoom.save();
+    res.status(200).json({ message: "New message was added to chatRoom" + id });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+
+  // try {
+  //   const message = await MessageModel.create(req.body);
+  //   res.status(200).json(message);
+  // } catch (error) {
+  //   res.status(500).json({ message: error.message });
+  // }
+});
 
 // Delete channel by ID
 router.delete("/channel/:id", async (req, res) => {

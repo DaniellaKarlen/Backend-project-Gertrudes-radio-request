@@ -8,6 +8,11 @@ import ChatRoom from "./models/chatRoom.js";
 import jwt from "jsonwebtoken";
 import User from "./models/user.js";
 import session from "express-session";
+import bcrypt from "bcrypt";
+import cookies from "universal-cookie";
+import path from "path";
+import url from "url";
+// import login from "./views/login.ejs";
 
 const addr = "127.0.0.1";
 const port = process.env.PORT;
@@ -27,9 +32,22 @@ app.use(
   })
 );
 
+/* configure working directory path */
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename); // Current working directory
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/login.html");
+});
+// app.use(express.static("public"));
+
 //JWT_TOKEN
 const token = jwt.sign({ username: "ADMIN" }, process.env.JWT_SIGN_KEY);
 console.log(token);
+
+app.get("/register", (req, res) => {
+  res.render("register");
+});
 
 // register page
 app.post("/register", async (req, res) => {
@@ -44,34 +62,36 @@ app.post("/register", async (req, res) => {
   // Skapar användare om "username" är unikt
   const user = new User({ username, password });
   await user.save();
-  req.session.user_id = user._id;
+  req.session.user_id = User._id;
   res.send(201);
 });
 
-// Koppla login till databas!!
-app.post("/auth/login", (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+app.get("/login", (req, res) => {
+  res.render("login");
+});
 
-  let user = adminDb.find(
-    (user) => user.username == username && user.password == password
-  );
+app.post("/login", async (req, res) => {
+  const { password, username } = req.body;
+  const foundUser = await User.findOne({ username: username });
 
-  if (user == undefined) {
-    res.status(401);
-    res.send("invalid authentication");
+  if (foundUser == null) {
+    res.status(401).send("Invalid Username or password");
   } else {
-    const payload = {
-      username: user.username,
-      role: user.role,
-    };
-    const payloadOptions = {
-      expiresIn: "15m",
-    };
-    const token = jwt.sign(payload, process.env.JWT_SIGN_KEY, payloadOptions);
-    console.log(token);
-    res.status(200);
-    res.send(token);
+    const isPasswordValid = await bcrypt.compare(password, foundUser.password);
+    if (isPasswordValid) {
+      const payload = {
+        username: foundUser.username,
+        role: foundUser.role,
+      };
+      const payloadOptions = {
+        expiresIn: "15m",
+      };
+      const token = jwt.sign(payload, process.env.JWT_SIGN_KEY, payloadOptions);
+      console.log(token);
+      res.status(200).send(token);
+    } else {
+      res.status(401).send("Invalid Username or password");
+    }
   }
 });
 

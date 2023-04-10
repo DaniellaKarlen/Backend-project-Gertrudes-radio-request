@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="api.js"></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div>
+      <h1>Chat App</h1>
+      <form action="/login" method="POST">
+        <div>
+          <h3>Logga in</h3>
+          <input
+            class="username-field login-field"
+            type="text"
+            placeholder="Användarnamn" />
+        </div>
+        <div>
+          <input
+            class="password-field login-field"
+            type="password"
+            placeholder="Lösenord" />
+        </div>
+        <button class="login-btn" type="submit">Logga in</button>
+      </form>
+
+      <form action="/register" method="post">
+        <div>
+          <h3>Registrera dig</h3>
+          <input
+            class="username-field register-field"
+            type="text"
+            placeholder="Användarnamn" />
+        </div>
+        <div>
+          <input
+            class="password-field register-field"
+            type="password"
+            placeholder="Lösenord" />
+        </div>
+        <button class="create-account-btn" type="submit">Skapa konto</button>
+      </form>
+    </div>
+  </body>
+</html>

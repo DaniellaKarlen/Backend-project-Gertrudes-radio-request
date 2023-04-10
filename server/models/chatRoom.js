@@ -12,22 +12,19 @@ const chatRoomSchema = new mongoose.Schema({
   members: {
     type: Array,
   },
+  message: {
+    type: Array,
+  },
 });
 
 const ChatRoom = mongoose.model("ChatRoom", chatRoomSchema);
 
-// const aPost = new ChatMessage({ name: "William", message: "Hi" });
-
-// aPost.messages.push({ name: "Daniella", message: "Hej på dig" });
-
-// aPost.save((err, data) => {});
-
 export async function createChatroom(req, res) {
   const name = req.body;
 
-  const chatRoomExists = await ChatRoom.findOne(name);
+  // const chatRoomExists = await ChatRoom.findOne(name);
 
-  if (chatRoomExists) throw "Chatroom alredy exists";
+  // if (chatRoomExists) throw "Chatroom alredy exists";
 
   const newChatRoom = new ChatRoom(name);
   await newChatRoom.save();
