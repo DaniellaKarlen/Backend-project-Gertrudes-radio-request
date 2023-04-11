@@ -19,8 +19,8 @@ const DB = process.env.MONGO_URI;
 const app = express();
 
 app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: true })); 
-app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use(express.json());
 app.use(
@@ -80,6 +80,7 @@ app.post("/login", async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, foundUser.password);
     if (isPasswordValid) {
       const payload = {
+        id: foundUser._id,
         username: foundUser.username,
         role: foundUser.role,
       };
@@ -87,8 +88,10 @@ app.post("/login", async (req, res) => {
         expiresIn: "15m",
       };
       const token = jwt.sign(payload, process.env.JWT_SIGN_KEY, payloadOptions);
+
       console.log(token);
-      res.send(token).redirect(`/duck/api/channel?token=${token}`);
+      // res.send(token).redirect(`/duck/api/channel?token=${token}`);
+      res.status(200).send(token);
     } else {
       res.status(401).send("Invalid Username or password");
     }

@@ -4,6 +4,7 @@ import ChatMessage from "../../models/chatmessage.js";
 import Broadcast from "../../models/broadcast.js";
 import jwt from "jsonwebtoken";
 import User from "../../models/user.js";
+import { isAdmin } from "../middleware/adminCheck.js";
 const router = express.Router();
 
 // fetch all channels
@@ -147,21 +148,14 @@ router.get("/broadcast", async (req, res) => {
 // filter
 // authorization vs authentication
 // Create emergency broadcast (admin only)
-router.post("/broadcast", async (req, res) => {
-  const authHeader = req.headers["authorization"];
-  if (authHeader == undefined) {
-    res.status(403); //bad request
-    res.send("sign in required");
-  } else {
-    const token = authHeader.replace("Bearer ", "");
-    try {
-      jwt.verify(token, process.env.JWT_SIGN_KEY);
-      const channel = await Broadcast.create(req.body);
-      res.status(200).json(channel);
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).json({ message: error.message });
-    }
+// Route handler for the broadcast endpoint
+router.post("/broadcast", isAdmin, async (req, res) => {
+  try {
+    const channel = await Broadcast.create(req.body);
+    res.status(200).json(channel);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message });
   }
 });
 
