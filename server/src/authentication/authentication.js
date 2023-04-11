@@ -12,66 +12,66 @@ app.use(express());
 //   const password = req.body.password;
 // });
 
-app.post("/auth/login", (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+// app.post("/auth/login", (req, res) => {
+//   const username = req.body.username;
+//   const password = req.body.password;
 
-  if (username == undefined || password == undefined) {
-    res.status(400); //bad request
-    res.send("Missing login details");
-  } else {
-    let token = jwtUtil.generate(username);
+//   if (username == undefined || password == undefined) {
+//     res.status(400); //bad request
+//     res.send("Missing login details");
+//   } else {
+//     let token = jwtUtil.generate(username);
 
-    res.status(200);
-    res.send(token);
-  }
-});
+//     res.status(200);
+//     res.send(token);
+//   }
+// });
 
-function generate(username) {
-  const adminDb = [
-    {
-      username: "Admin",
-      password: "admin123",
-      role: "ADMIN",
-    },
-  ];
+// function generate(username) {
+//   const adminDb = [
+//     {
+//       username: "Admin",
+//       password: "admin123",
+//       role: "ADMIN",
+//     },
+//   ];
 
-  let payloadOptions = {
-    issuer: "chat-app",
-    subject: "send and recieve access token",
-    expiresIn: "15m",
-  };
+//   let payloadOptions = {
+//     issuer: "chat-app",
+//     subject: "send and recieve access token",
+//     expiresIn: "15m",
+//   };
 
-  let payload = {
-    username: adminDb[0].username,
-    password: adminDb[0].password,
-    role: "ADMIN", //hämtas från datbas ist?
-  };
+//   let payload = {
+//     username: adminDb[0].username,
+//     password: adminDb[0].password,
+//     role: "ADMIN", //hämtas från datbas ist?
+//   };
 
-  let token = jwt.sign(payload, JWT_SIGN_KEY, payloadOptions);
+//   let token = jwt.sign(payload, JWT_SIGN_KEY, payloadOptions);
 
-  return token;
-}
+//   return token;
+// }
 
-function verify(token) {
-  try {
-    return jwt.verify(token, JWT_SIGN_KEY);
-  } catch (err) {
-    let verfError = new Error();
+// function verify(token) {
+//   try {
+//     return jwt.verify(token, JWT_SIGN_KEY);
+//   } catch (err) {
+//     let verfError = new Error();
 
-    if (err.name == "JsonWebTokenError") {
-      verfError.clientMessage = "Digital signing is invalid, request new token";
-      verfError.serverMessage = "Token verification failed";
-    }
+//     if (err.name == "JsonWebTokenError") {
+//       verfError.clientMessage = "Digital signing is invalid, request new token";
+//       verfError.serverMessage = "Token verification failed";
+//     }
 
-    if (err.name == "TokenExpiredError") {
-      verfError.clientMessage = "Digital signing is invalid, request new token";
-      verfError.serverMessage = "Token verification failed";
-    }
+//     if (err.name == "TokenExpiredError") {
+//       verfError.clientMessage = "Digital signing is invalid, request new token";
+//       verfError.serverMessage = "Token verification failed";
+//     }
 
-    throw verfError;
-  }
-}
+//     throw verfError;
+//   }
+// }
 
 // async function adminToken() {
 //   const adminDb = [
@@ -104,4 +104,4 @@ function verify(token) {
 //   }
 // }
 
-export default { generate, verify };
+export default {};

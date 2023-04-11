@@ -18,6 +18,16 @@ async function handleAuthentication() {
 
   // authenticate with server
   await authenticate(authDetails);
-  refreshListContent();
 }
 btnLogin.addEventListener("click", handleAuthentication);
+
+async function allChannels() {
+  let result = await sendData("http://127.0.0.1:3030/duck/api/channel", "GET");
+  let channels = await result.json();
+
+  return channels;
+}
+
+// document.getElementById("myButton").onclick = function () {
+//   location.href = "www.yoursite.com";
+// };

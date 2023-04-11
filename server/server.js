@@ -14,14 +14,13 @@ import path from "path";
 import url from "url";
 // import login from "./views/login.ejs";
 
-const addr = "127.0.0.1";
 const port = process.env.PORT;
 const DB = process.env.MONGO_URI;
 const app = express();
 
 app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: true })); // for html forms (extended is true by default, allows for form to json)
-app.use(express.json()); // transform request (data in) data to json
+app.use(express.urlencoded({ extended: true })); 
+app.use(express.json()); 
 
 app.use(express.json());
 app.use(
@@ -37,7 +36,8 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename); // Current working directory
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/login.html");
+  // res.sendFile(__dirname + "/login.html");
+  res.render("login.ejs");
 });
 // app.use(express.static("public"));
 
@@ -46,7 +46,7 @@ const token = jwt.sign({ username: "ADMIN" }, process.env.JWT_SIGN_KEY);
 console.log(token);
 
 app.get("/register", (req, res) => {
-  res.render("register");
+  res.render("register.ejs");
 });
 
 // register page
@@ -67,7 +67,7 @@ app.post("/register", async (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("login");
+  res.render("login.ejs");
 });
 
 app.post("/login", async (req, res) => {
@@ -75,7 +75,7 @@ app.post("/login", async (req, res) => {
   const foundUser = await User.findOne({ username: username });
 
   if (foundUser == null) {
-    res.status(401).send("Invalid Username or password");
+    res.status(401).send("Invalid Username or password!");
   } else {
     const isPasswordValid = await bcrypt.compare(password, foundUser.password);
     if (isPasswordValid) {
@@ -88,7 +88,7 @@ app.post("/login", async (req, res) => {
       };
       const token = jwt.sign(payload, process.env.JWT_SIGN_KEY, payloadOptions);
       console.log(token);
-      res.status(200).send(token);
+      res.send(token).redirect(`/duck/api/channel?token=${token}`);
     } else {
       res.status(401).send("Invalid Username or password");
     }
