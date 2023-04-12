@@ -15,7 +15,6 @@ export async function isAdmin(req, res, next) {
       console.log(admin);
       const user = await User.findById(admin.id);
       if (user && user.admin) {
-        // Add check for user being not null and admin being true
         next(); // User is an admin, continue to the router handler
       } else {
         res.status(403); // Forbidden
