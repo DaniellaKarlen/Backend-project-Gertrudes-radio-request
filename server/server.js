@@ -4,12 +4,10 @@ env.config();
 import express from "express";
 import router from "./src/router/router.js";
 import connectDB from "./src/mongoose/mongoDb.js";
-import ChatRoom from "./models/chatRoom.js";
 import jwt from "jsonwebtoken";
 import User from "./models/user.js";
 import session from "express-session";
 import bcrypt from "bcrypt";
-import cookies from "universal-cookie";
 import path from "path";
 import url from "url";
 // import login from "./views/login.ejs";
@@ -36,20 +34,18 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename); // Current working directory
 
 app.get("/", (req, res) => {
-  // res.sendFile(__dirname + "/login.html");
   res.render("login.ejs");
 });
-// app.use(express.static("public"));
 
 //JWT_TOKEN
 const token = jwt.sign({ username: "ADMIN" }, process.env.JWT_SIGN_KEY);
 console.log(token);
 
+// Register page
 app.get("/register", (req, res) => {
   res.render("register.ejs");
 });
 
-// register page
 app.post("/register", async (req, res) => {
   const { password, username } = req.body;
 
@@ -66,6 +62,7 @@ app.post("/register", async (req, res) => {
   res.send(201);
 });
 
+// Login page
 app.get("/login", (req, res) => {
   res.render("login.ejs");
 });

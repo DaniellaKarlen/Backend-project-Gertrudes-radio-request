@@ -11,12 +11,12 @@ export async function isAdmin(req, res, next) {
   } else {
     const token = authHeader.replace("Bearer ", "");
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SIGN_KEY);
-      console.log(decoded);
-      const user = await User.findById(decoded.id);
+      const admin = jwt.verify(token, process.env.JWT_SIGN_KEY);
+      console.log(admin);
+      const user = await User.findById(admin.id);
       if (user && user.admin) {
         // Add check for user being not null and admin being true
-        next(); // User is an admin, continue to the next middleware or route handler
+        next(); // User is an admin, continue to the router handler
       } else {
         res.status(403); // Forbidden
         res.send("You are not authorized to access this endpoint");
