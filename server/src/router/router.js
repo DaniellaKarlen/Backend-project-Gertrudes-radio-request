@@ -59,7 +59,6 @@ router.post("/channel/:id", login, async (req, res) => {
       .status(200)
       .json({ message: "New message was added to chatRoom " + id });
   } catch (error) {
-    console.log(error.message);
     res.status(500).json({ message: error.message });
   }
 });
