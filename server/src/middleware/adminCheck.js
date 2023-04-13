@@ -11,10 +11,10 @@ export async function isAdmin(req, res, next) {
   } else {
     const token = authHeader.replace("Bearer ", "");
     try {
-      const admin = jwt.verify(token, process.env.JWT_SIGN_KEY);
-      console.log(admin);
-      const user = await User.findById(admin.id);
-      if (user && user.admin) {
+      const user = jwt.verify(token, process.env.JWT_SIGN_KEY);
+      console.log(user);
+      const admin = await User.findById(user.id);
+      if (admin && admin.admin) {
         next(); // User is an admin, continue to the router handler
       } else {
         res.status(403); // Forbidden

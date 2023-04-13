@@ -59,7 +59,6 @@ router.post("/channel/:id", login, async (req, res) => {
       .status(200)
       .json({ message: "New message was added to chatRoom " + id });
   } catch (error) {
-    console.log(error.message);
     res.status(500).json({ message: error.message });
   }
 });
@@ -82,8 +81,8 @@ router.delete("/channel/:id", login, async (req, res) => {
 // Fetch emergency broadcast
 router.get("/broadcast", login, async (req, res) => {
   try {
-    const channel = await Broadcast.find({});
-    res.status(200).json(channel);
+    const broadcast = await Broadcast.find({});
+    res.status(200).json(broadcast);
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: error.message });
@@ -94,8 +93,8 @@ router.get("/broadcast", login, async (req, res) => {
 // Post emergency endpoint
 router.post("/broadcast", isAdmin, async (req, res) => {
   try {
-    const channel = await Broadcast.create(req.body);
-    res.status(200).json(channel);
+    const broadcast = await Broadcast.create(req.body);
+    res.status(200).json(broadcast);
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: error.message });
