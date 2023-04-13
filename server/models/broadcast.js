@@ -9,9 +9,6 @@ const broadcastSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  members: {
-    type: Array,
-  },
 });
 
 const Broadcast = mongoose.model("Broadcast", broadcastSchema);
