@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 export async function login(req, res, next) {
   const authHeader = req.headers["authorization"];
   if (authHeader == undefined) {
-    res.status(403); //bad request
+    res.status(403); //Forbidden
     res.send("sign in required");
   } else {
     const token = authHeader.replace("Bearer ", "");

@@ -1,4 +1,3 @@
-// Middleware function to check if user is an admin
 import jwt from "jsonwebtoken";
 import User from "../../models/user.js";
 
